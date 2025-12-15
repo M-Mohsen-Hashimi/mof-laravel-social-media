@@ -1,0 +1,45 @@
+
+
+
+Facebook:
+
+
+   users
+   id, 
+   username
+   password
+   timestamps
+
+
+
+   profile
+   id
+   user_id
+   avatar
+   bio
+   timestamps
+
+
+   posts
+   id
+   user_id
+   body
+   image
+   timestamps
+
+
+
+   commments
+   id
+   post_id
+   body
+   user_id
+   timestamps
+
+
+   likes
+    id
+    user_id,
+    commentable_id,
+    commentable_type,
+    timestamps

@@ -1,0 +1,41 @@
+{
+    "model": "Post1",
+    "fields": [
+        { "name": "read_time", "type": "number", "inputType": "number" },
+        {
+            "name": "title",
+            "type": "string",
+            "inputType": "text",
+            "searchable": true
+        },
+        {
+            "name": "content",
+            "type": "string",
+            "inputType": "textarea",
+            "searchable": true
+        },
+        { "name": "image", "type": "string", "inputType": "file" },
+        { "name": "is_active", "type": "boolean", "inputType": "checkbox" },
+        {
+            "name": "category",
+            "field_name": "category_id",
+            "type": "string",
+            "inputType": "select",
+            "options": "categories",
+            "valueField": "id",
+            "labelField": "name"
+        },
+        {
+            "name": "status",
+            "type": "string",
+            "inputType": "select",
+            "options": [
+                { "value": "draft", "label": "Draft" },
+                { "value": "published", "label": "Published" },
+                { "value": "cancelled", "label": "Cancelled" },
+                { "value": "completed", "label": "Completed" }
+            ]
+        }
+    ],
+    "pages": ["create", "index", "edit", "view"]
+}

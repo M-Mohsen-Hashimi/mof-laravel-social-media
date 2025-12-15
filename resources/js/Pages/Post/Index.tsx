@@ -1,0 +1,161 @@
+import React, { useState, useEffect } from 'react'
+import { Head, Link, router } from '@inertiajs/react'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { CircleCheck, CircleX, Search, X } from 'lucide-react'
+
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow 
+}
+from '@/components/ui/table'
+
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogTrigger,
+  DialogDescription
+}
+from '@/components/ui/dialog'
+
+
+
+interface Post {
+    id: number
+    title: string
+    content: string
+    published_at: string
+  }
+
+interface Props {
+    posts: Post[]
+    filters?: {
+        search?: string
+    };
+}
+
+export default function Index({ posts, filters }: Props): React.ReactElement {
+  const [search, setSearch] = useState(filters?.search || '');
+  const hasSearchableFields = true;
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (hasSearchableFields) {
+        const params = new URLSearchParams(window.location.search);
+        
+        if (search) {
+          params.set('search', search);
+        } else {
+          params.delete('search');
+        }
+
+        const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        
+        router.get(newUrl, {}, {
+          preserveState: true,
+          preserveScroll: true,
+          replace: true,
+        });
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [search, hasSearchableFields]);
+
+  const handleDelete = (id: number) => {
+      router.delete(route('posts.destroy', id), {
+          onSuccess: () => {
+              // to do
+          }
+      });
+    };
+
+  const clearSearch = () => {
+    setSearch('');
+  };
+
+  return (
+    <>
+      <Head title="Post List" />
+      <Card className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-semibold">Post List</h1>
+          <Link href={route('posts.create')}>
+            <Button className="hover:cursor-pointer">Create Post</Button>
+          </Link>
+        </div>
+
+        {hasSearchableFields && (
+          <div className="mb-4">
+            <div className="relative max-w-sm">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search by Title, Content..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 pr-10"
+              />
+              {search && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Content</TableHead>
+              <TableHead>Published At</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            { posts.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell >{item.title}</TableCell>
+                <TableCell >{item.content}</TableCell>
+                <TableCell >{item.published_at}</TableCell>
+                <TableCell>
+                  <Link href={route('posts.show', item.id)}>
+                    <Button size="sm" variant="link" className="hover:cursor-pointer hover:underline">View</Button>
+                  </Link>
+                  <Link href={route('posts.edit', item.id)}>
+                    <Button size="sm" variant="link" className="hover:cursor-pointer hover:underline text-indigo-600">Edit</Button>
+                  </Link>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button size="sm" variant="link" className="hover:cursor-pointer hover:underline text-destructive/90">Delete</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                          This action cannot be undone. This will permanently delete the post
+                      </DialogDescription>
+                      <div className="flex justify-end">
+                        <Button variant="destructive" className="hover:cursor-pointer" onClick={() => handleDelete(item.id)}>Delete</Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </TableCell>
+              </TableRow>
+            )) }
+          </TableBody>
+        </Table>
+      </Card>
+    </>
+  )
+}
