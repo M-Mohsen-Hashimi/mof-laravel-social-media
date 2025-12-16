@@ -45,7 +45,7 @@
                         Edit
                     </a>
                     <a  href="{{ route('users.destroy', $user) }}" class="text-white bg-red-500 box-border border border-transparent hover:bg-warning-strong focus:ring-4 focus:ring-warning-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">
-                        Delete--
+                        Delete
                     </a>
 
 
