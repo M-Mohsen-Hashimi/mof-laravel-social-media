@@ -12,7 +12,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('users.index', ['users' => User::paginate(2)]);
+        $users = User::paginate();
+
+        return view('users.index', ['users' => $users]);
     }
 
     /**
@@ -20,7 +22,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create');
     }
 
     /**
@@ -28,7 +30,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'string|required|min:3',
+            'email' => 'string|required|min:8|email',
+            'password' => 'string|required',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+        ]);
+
+        return redirect()->route('users.index')->with('message', 'User created successfully');
     }
 
     /**
